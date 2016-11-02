@@ -182,6 +182,7 @@
   };
   
   var sortedSections = [];
+  var eventsBound = false;
 
   wdtEmojiBundle.generateEmojiSections = function () {
 
@@ -203,106 +204,6 @@
 
     wdtEmojiBundle.fillPickerPopupByGroup(Object.keys(sortedSections)[0]);
   }
-
-  /**
-   *
-   * Main function to fill picker popup with emoji
-   *
-   * @returns void | boolean | mixed
-   */
-  wdtEmojiBundle.fillPickerPopup = function () {
-
-    if (hasClass(this.popup, 'ready'))
-      return false;
-
-    // @todo - [needim] - Support for recent and custom emoji list
-    var sectionsContainer = this.popup.querySelector('.wdt-emoji-sections'),
-      sections = {},
-      sortedSections = [];
-
-    for (var category in wdtEmojiBundle.defaults.emojiData) {
-      if (wdtEmojiBundle.defaults.emojiData.hasOwnProperty(category)) {
-        emojiList = wdtEmojiBundle.defaults.emojiData[category];
-        sections[category] = emojiList;
-      }
-    }
-
-    var sortedSectionsArray = Object.keys(sections).sort(function (a, b) {
-      return wdtEmojiBundle.defaults.sectionOrders[a] < wdtEmojiBundle.defaults.sectionOrders[b] ? 1 : -1;
-    });
-
-    for (var i = 0; i < sortedSectionsArray.length; i++) {
-      sortedSections[sortedSectionsArray[i]] = sections[sortedSectionsArray[i]];
-    }
-
-    for (var title in sortedSections) {
-      if (sortedSections.hasOwnProperty(title)) {
-        var emojiList = sortedSections[title],
-          emojiOrders = [];
-
-        if (emojiList.length) {
-          var emojiSection = document.createElement('div'),
-            emojiTitle = document.createElement('h3'),
-            emojiListDiv = document.createElement('div');
-
-          emojiTitle.innerHTML = title;
-          emojiTitle.dataset.emojiGroup = title;
-          emojiListDiv.dataset.emojiGroup = title;
-
-          addClass(emojiListDiv, 'wdt-emoji-list');
-          addClass(emojiSection, 'wdt-emoji-section');
-
-          for (i = 0; i < emojiList.length; i++) {
-            var em = emojiList[i];
-
-            if (em.has_img_apple || em.has_img_emojione || em.has_img_google || em.has_img_twitter) {
-              var emojiLink = document.createElement('a');
-
-              addClass(emojiLink, 'wdt-emoji');
-              addClass(emojiLink, 'green');
-
-              emojiLink.dataset.hasImgApple = em.has_img_apple;
-              emojiLink.dataset.hasImgEmojione = em.has_img_emojione;
-              emojiLink.dataset.hasImgGoogle = em.has_img_google;
-              emojiLink.dataset.hasImgTwitter = em.has_img_twitter;
-              emojiLink.dataset.wdtEmojiName = em.name;
-              emojiLink.dataset.wdtEmojiShortnames = ':' + em.short_names.join(': :') + ':';
-              emojiLink.dataset.wdtEmojiShortname = em.short_name;
-              emojiLink.dataset.wdtEmojiOrder = em.sort_order;
-
-              emojiLink.innerHTML = emoji.replace_colons(':' + em.short_name + ':');
-
-              if (i == 0) {
-                emojiListDiv.appendChild(emojiLink);
-                emojiOrders.push(em.sort_order);
-              } else {
-
-                // insert picker emoji with sort order
-                var c = closest(emojiOrders, em.sort_order),
-                  closestEmoji = emojiListDiv.querySelector('[data-wdt-emoji-order="' + c + '"]'),
-                  nodeIndex = Array.prototype.indexOf.call(emojiListDiv.childNodes, closestEmoji);
-
-                if (em.sort_order > c) {
-                  emojiListDiv.childNodes[nodeIndex].insertAdjacentHTML('afterend', emojiLink.outerHTML);
-                } else {
-                  emojiListDiv.insertBefore(emojiLink, emojiListDiv.childNodes[nodeIndex]);
-                }
-                emojiOrders.push(em.sort_order);
-              }
-            }
-          }
-
-          emojiSection.appendChild(emojiTitle);
-          emojiSection.appendChild(emojiListDiv);
-          sectionsContainer.appendChild(emojiSection);
-        }
-      }
-    }
-
-    addClass(this.popup, 'ready');
-
-    wdtEmojiBundle.bindEvents();
-  };
 
    wdtEmojiBundle.fillPickerPopupByGroup = function (title) {
 
@@ -367,11 +268,17 @@
 
         emojiSection.appendChild(emojiTitle);
         emojiSection.appendChild(emojiListDiv);
-        sectionsContainer.appendChild(emojiSection);
+        if (sectionsContainer.firstChild){
+          sectionsContainer.replaceChild(emojiSection, sectionsContainer.firstChild);
+        }
+        else {
+          sectionsContainer.appendChild(emojiSection);
+        }
+      }
+      if (!eventsBound){
+        wdtEmojiBundle.bindEvents();
       }
     }
-
-    wdtEmojiBundle.bindEvents();
   };
 
   /**
@@ -485,7 +392,7 @@
         wdtEmojiBundle.search(input.value);
       }, 225);
     });
-
+    eventsBound = true;
   };
 
   /**
