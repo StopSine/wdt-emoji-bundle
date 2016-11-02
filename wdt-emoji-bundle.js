@@ -167,7 +167,7 @@
     addClass(wdtEmojiBundle.popup, 'open');
 
     // fill with emoji
-    wdtEmojiBundle.fillPickerPopup();
+    wdtEmojiBundle.generateEmojiSections();
 
     if (hasClass(this, 'wdt-emoji-picker-open')) {
       wdtEmojiBundle.closePicker(this);
@@ -180,6 +180,29 @@
     addClass(this, 'wdt-emoji-picker-open');
     this.innerHTML = emoji.replace_colons(':sunglasses:');
   };
+  
+  var sortedSections = [];
+
+  wdtEmojiBundle.generateEmojiSections = function () {
+
+    var sections = {};
+    for (var category in wdtEmojiBundle.defaults.emojiData) {
+      if (wdtEmojiBundle.defaults.emojiData.hasOwnProperty(category)) {
+        emojiList = wdtEmojiBundle.defaults.emojiData[category];
+        sections[category] = emojiList;
+      }
+    }
+
+    var sortedSectionsArray = Object.keys(sections).sort(function (a, b) {
+      return wdtEmojiBundle.defaults.sectionOrders[a] < wdtEmojiBundle.defaults.sectionOrders[b] ? 1 : -1;
+    });
+
+    for (var i = 0; i < sortedSectionsArray.length; i++) {
+      sortedSections[sortedSectionsArray[i]] = sections[sortedSectionsArray[i]];
+    }
+
+    wdtEmojiBundle.fillPickerPopupByGroup(Object.keys(sortedSections)[0]);
+  }
 
   /**
    *
@@ -287,24 +310,7 @@
       return false;
 
     // @todo - [needim] - Support for recent and custom emoji list
-    var sectionsContainer = this.popup.querySelector('.wdt-emoji-sections'),
-      sections = {},
-      sortedSections = [];
-
-    for (var category in wdtEmojiBundle.defaults.emojiData) {
-      if (wdtEmojiBundle.defaults.emojiData.hasOwnProperty(category)) {
-        emojiList = wdtEmojiBundle.defaults.emojiData[category];
-        sections[category] = emojiList;
-      }
-    }
-
-    var sortedSectionsArray = Object.keys(sections).sort(function (a, b) {
-      return wdtEmojiBundle.defaults.sectionOrders[a] < wdtEmojiBundle.defaults.sectionOrders[b] ? 1 : -1;
-    });
-
-    for (var i = 0; i < sortedSectionsArray.length; i++) {
-      sortedSections[sortedSectionsArray[i]] = sections[sortedSectionsArray[i]];
-    }
+    var sectionsContainer = this.popup.querySelector('.wdt-emoji-sections');
 
     if (sortedSections.hasOwnProperty(title)) {
       var emojiList = sortedSections[title],
