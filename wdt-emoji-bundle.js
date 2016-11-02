@@ -144,7 +144,7 @@
 
       var pos = {
         left: (elRect.left - popupRect.width) + elRect.width,
-        top : elRect.top + Math.abs(bodyRect.top) + elRect.height
+        top : elRect.top + Math.abs(bodyRect.top) + elRect.height - elRect.height - popupRect.height
       };
 
       pos.left = pos.left < 0 ? 0 : pos.left;
