@@ -397,23 +397,18 @@ img.emoji {
   line-height: 35px;
 
   position: absolute;
-  top: -35px;
-  left: 50%;
+  top: 0;
+  right: 0;
 
   visibility: hidden;
 
   width: 40px;
   height: 35px;
 
-  transform: translateX(-50%);
   text-align: center;
 
   opacity: 0;
   color: #444;
-  border: 1px solid rgba(0, 0, 0, .1);
-  border-bottom-color: #e7543d;
-  border-radius: 50% 50% 0 0;
-  background-color: rgba(255, 255, 255, .8);
 }
 
 /* iPhone 2G-4S-5-5S in portrait */
@@ -421,9 +416,6 @@ img.emoji {
 and (min-device-width: 320px)
 and (max-device-width: 480px)
 and (orientation: portrait) {
-  .wdt-emoji-picker {
-    display: none;
-  }
 
   .wdt-emoji-tab {
     width: 24px;
