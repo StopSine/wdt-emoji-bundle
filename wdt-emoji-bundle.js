@@ -19,11 +19,8 @@
   var wdtEmojiBundle = {};
 
   wdtEmojiBundle.defaults = {
-    pickerColors : ['green', 'pink', 'yellow', 'blue', 'gray'],
     textMode     : true,
     sectionOrders: {
-      'Recent'  : 10,
-      'Custom'  : 9,
       'People'  : 8,
       'Nature'  : 7,
       'Foods'   : 6,
@@ -75,7 +72,6 @@
 
     document.querySelector('body').dataset.wdtEmojiBundle = wdtEmojiBundle.defaults.emojiType;
 
-    self.popup.querySelector('[data-group-name="Recent"]').innerHTML = emoji.replace_colons(':clock3:');
     self.popup.querySelector('[data-group-name="People"]').innerHTML = emoji.replace_colons(':sunglasses:');
     self.popup.querySelector('[data-group-name="Nature"]').innerHTML = emoji.replace_colons(':shamrock:');
     self.popup.querySelector('[data-group-name="Foods"]').innerHTML = emoji.replace_colons(':pizza:');
@@ -84,7 +80,6 @@
     self.popup.querySelector('[data-group-name="Objects"]').innerHTML = emoji.replace_colons(':bulb:');
     self.popup.querySelector('[data-group-name="Symbols"]').innerHTML = emoji.replace_colons(':heart:');
     self.popup.querySelector('[data-group-name="Flags"]').innerHTML = emoji.replace_colons(':waving_white_flag:');
-    self.popup.querySelector('[data-group-name="Custom"]').innerHTML = emoji.replace_colons(':dark_sunglasses:');
 
     // a trick for contenteditable blur range clear
     self.ranges = {};
@@ -199,7 +194,7 @@
 
     // @todo - [needim] - Support for recent and custom emoji list
     var sectionsContainer = this.popup.querySelector('.wdt-emoji-sections'),
-      sections = {'Recent': [], 'Custom': []},
+      sections = {},
       sortedSections = [];
 
     for (var category in wdtEmojiBundle.defaults.emojiData) {
@@ -241,7 +236,7 @@
               var emojiLink = document.createElement('a');
 
               addClass(emojiLink, 'wdt-emoji');
-              addClass(emojiLink, wdtEmojiBundle.getRandomPickerColor());
+              addClass(emojiLink, 'green');
 
               emojiLink.dataset.hasImgApple = em.has_img_apple;
               emojiLink.dataset.hasImgEmojione = em.has_img_emojione;
@@ -286,12 +281,96 @@
     wdtEmojiBundle.bindEvents();
   };
 
-  /**
-   * Random css class getter for picker hover colors
-   * @returns string
-   */
-  wdtEmojiBundle.getRandomPickerColor = function () {
-    return wdtEmojiBundle.defaults.pickerColors[Math.floor(Math.random() * wdtEmojiBundle.defaults.pickerColors.length)]
+   wdtEmojiBundle.fillPickerPopupByGroup = function (title) {
+
+    if (hasClass(this.popup, 'ready'))
+      return false;
+
+    // @todo - [needim] - Support for recent and custom emoji list
+    var sectionsContainer = this.popup.querySelector('.wdt-emoji-sections'),
+      sections = {},
+      sortedSections = [];
+
+    for (var category in wdtEmojiBundle.defaults.emojiData) {
+      if (wdtEmojiBundle.defaults.emojiData.hasOwnProperty(category)) {
+        emojiList = wdtEmojiBundle.defaults.emojiData[category];
+        sections[category] = emojiList;
+      }
+    }
+
+    var sortedSectionsArray = Object.keys(sections).sort(function (a, b) {
+      return wdtEmojiBundle.defaults.sectionOrders[a] < wdtEmojiBundle.defaults.sectionOrders[b] ? 1 : -1;
+    });
+
+    for (var i = 0; i < sortedSectionsArray.length; i++) {
+      sortedSections[sortedSectionsArray[i]] = sections[sortedSectionsArray[i]];
+    }
+
+    if (sortedSections.hasOwnProperty(title)) {
+      var emojiList = sortedSections[title],
+        emojiOrders = [];
+
+      if (emojiList.length) {
+        var emojiSection = document.createElement('div'),
+          emojiTitle = document.createElement('h3'),
+          emojiListDiv = document.createElement('div');
+
+        emojiTitle.innerHTML = title;
+        emojiTitle.dataset.emojiGroup = title;
+        emojiListDiv.dataset.emojiGroup = title;
+
+        addClass(emojiListDiv, 'wdt-emoji-list');
+        addClass(emojiSection, 'wdt-emoji-section');
+
+        for (i = 0; i < emojiList.length; i++) {
+          var em = emojiList[i];
+
+          if (em.has_img_apple || em.has_img_emojione || em.has_img_google || em.has_img_twitter) {
+            var emojiLink = document.createElement('a');
+
+            addClass(emojiLink, 'wdt-emoji');
+            addClass(emojiLink, 'green');
+
+            emojiLink.dataset.hasImgApple = em.has_img_apple;
+            emojiLink.dataset.hasImgEmojione = em.has_img_emojione;
+            emojiLink.dataset.hasImgGoogle = em.has_img_google;
+            emojiLink.dataset.hasImgTwitter = em.has_img_twitter;
+            emojiLink.dataset.wdtEmojiName = em.name;
+            emojiLink.dataset.wdtEmojiShortnames = ':' + em.short_names.join(': :') + ':';
+            emojiLink.dataset.wdtEmojiShortname = em.short_name;
+            emojiLink.dataset.wdtEmojiOrder = em.sort_order;
+
+            emojiLink.innerHTML = emoji.replace_colons(':' + em.short_name + ':');
+
+            if (i == 0) {
+              emojiListDiv.appendChild(emojiLink);
+              emojiOrders.push(em.sort_order);
+            } else {
+
+              // insert picker emoji with sort order
+              var c = closest(emojiOrders, em.sort_order),
+                closestEmoji = emojiListDiv.querySelector('[data-wdt-emoji-order="' + c + '"]'),
+                nodeIndex = Array.prototype.indexOf.call(emojiListDiv.childNodes, closestEmoji);
+
+              if (em.sort_order > c) {
+                emojiListDiv.childNodes[nodeIndex].insertAdjacentHTML('afterend', emojiLink.outerHTML);
+              } else {
+                emojiListDiv.insertBefore(emojiLink, emojiListDiv.childNodes[nodeIndex]);
+              }
+              emojiOrders.push(em.sort_order);
+            }
+          }
+        }
+
+        emojiSection.appendChild(emojiTitle);
+        emojiSection.appendChild(emojiListDiv);
+        sectionsContainer.appendChild(emojiSection);
+      }
+    }
+
+    addClass(this.popup, 'ready');
+
+    wdtEmojiBundle.bindEvents();
   };
 
   /**
@@ -636,7 +715,7 @@
         removeClass(tabs[t], 'active');
       }
     }
-
+    wdtEmojiBundle.fillPickerPopupByGroup(group);
     var activeTab = wdtEmojiBundle.popup.querySelector('.wdt-emoji-tab[data-group-name="' + group + '"]');
     addClass(activeTab, 'active');
   };
