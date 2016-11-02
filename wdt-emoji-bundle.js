@@ -306,9 +306,6 @@
 
    wdtEmojiBundle.fillPickerPopupByGroup = function (title) {
 
-    if (hasClass(this.popup, 'ready'))
-      return false;
-
     // @todo - [needim] - Support for recent and custom emoji list
     var sectionsContainer = this.popup.querySelector('.wdt-emoji-sections');
 
@@ -373,8 +370,6 @@
         sectionsContainer.appendChild(emojiSection);
       }
     }
-
-    addClass(this.popup, 'ready');
 
     wdtEmojiBundle.bindEvents();
   };
@@ -474,13 +469,8 @@
     });
 
     live('click', '.wdt-emoji-tab', function (e) {
-      var group = this.dataset.groupName,
-        groupHeader = wdtEmojiBundle.popup.querySelector('.wdt-emoji-section h3[data-emoji-group="' + group + '"]');
-
-      if (groupHeader) {
-        wdtEmojiBundle.setActiveTab(group);
-        wdtEmojiBundle.scroller.scrollTop = groupHeader.offsetTop - groupHeader.getBoundingClientRect().height - 2;
-      }
+      var group = this.dataset.groupName;
+      wdtEmojiBundle.setActiveTab(group);
 
       return false;
     });
@@ -704,8 +694,6 @@
         addClass(el, 'sticky');
         css(el, {'top': tabHeaderHeight + 'px'});
         css(el.parentNode, {'padding-top': el.getBoundingClientRect().height + 'px'});
-
-        wdtEmojiBundle.setActiveTab(el.dataset.emojiGroup);
       }
     }
   };
