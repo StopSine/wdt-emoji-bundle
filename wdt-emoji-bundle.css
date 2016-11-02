@@ -411,6 +411,16 @@ img.emoji {
   color: #444;
 }
 
+@media only screen 
+and (max-device-width: 415px) {
+
+  span.emoji-outer {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+
 /* iPhone 2G-4S-5-5S in portrait */
 @media only screen
 and (min-device-width: 320px)
