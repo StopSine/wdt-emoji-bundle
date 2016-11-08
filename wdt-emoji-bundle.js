@@ -328,13 +328,14 @@
     }
 
     live('click', '.wdt-emoji-list a.wdt-emoji', function (event) {
-      var selection = getSelection(wdtEmojiBundle.input);
-      if (selection){
+      if (wdtEmojiBundle.input){
+        var selection = getSelection(wdtEmojiBundle.input);
         replaceText(wdtEmojiBundle.input, selection, ':' + this.dataset.wdtEmojiShortname + ':');
         var ce = new Event('input');
         wdtEmojiBundle.input.dispatchEvent(ce);
+        fire('select', {el: wdtEmojiBundle.input, event: event, emoji: ':' + this.dataset.wdtEmojiShortname + ':'});
+
       }
-      fire('select', {el: wdtEmojiBundle.input, event: event, emoji: ':' + this.dataset.wdtEmojiShortname + ':'});
       if (self.success){
         self.success(':' + this.dataset.wdtEmojiShortname + ':');
       }
