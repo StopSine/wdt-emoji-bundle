@@ -400,7 +400,7 @@ img.emoji {
   top: 0;
   right: 0;
 
-  visibility: hidden;
+  opacity: 1;
 
   width: 40px;
   height: 35px;
@@ -453,12 +453,6 @@ and (orientation: portrait) {
 
   #wdt-emoji-search {
     display: none;
-  }
-
-  .wdt-emoji-popup-mobile-closer {
-    visibility: visible;
-
-    opacity: 1;
   }
 
   .wdt-emoji-popup h3.sticky {

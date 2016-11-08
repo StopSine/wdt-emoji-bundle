@@ -125,7 +125,7 @@
    * @param ev
    * @returns {boolean}
    */
-  wdtEmojiBundle.openPicker = function (ev) {
+  wdtEmojiBundle.openPicker = function (ev, success) {
     var parent = findParent(ev.target, 'wdt-emoji-picker-parent');
     if (parent){
       wdtEmojiBundle.input = parent.querySelector(wdtEmojiBundle.selector);
@@ -180,6 +180,24 @@
 
     addClass(this, 'wdt-emoji-picker-open');
     this.innerHTML = emoji.replace_colons(':sunglasses:');
+
+    //bind click event (again)
+    live('click', '.wdt-emoji-list a.wdt-emoji', function (event) {
+      var selection = getSelection(wdtEmojiBundle.input);
+      if (selection){
+        replaceText(wdtEmojiBundle.input, selection, ':' + this.dataset.wdtEmojiShortname + ':');
+        var ce = new Event('input');
+        wdtEmojiBundle.input.dispatchEvent(ce);
+      }
+      fire('select', {el: wdtEmojiBundle.input, event: event, emoji: ':' + this.dataset.wdtEmojiShortname + ':'});
+      if (success){
+        success(':' + this.dataset.wdtEmojiShortname + ':');
+      }
+
+      wdtEmojiBundle.close();
+
+      return false;
+    });
   };
   
   var sortedSections = [];
