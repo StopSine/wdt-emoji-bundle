@@ -154,7 +154,8 @@
         top : elRect.top + Math.abs(bodyRect.top) + elRect.height - elRect.height - popupRect.height
       };
 
-      pos.left = pos.left < 0 ? 0 : pos.left;
+      pos.left = (pos.left - popupRect.width) < 0 ? popupRect.width : pos.left;
+      pos.top = (pos.top - popupRect.height) < 150 ? 150 : pos.top;
 
       pos.left += 'px';
       pos.top += 'px';
