@@ -127,8 +127,9 @@
    */
   wdtEmojiBundle.openPicker = function (ev) {
     var parent = findParent(ev.target, 'wdt-emoji-picker-parent');
-
-    wdtEmojiBundle.input = parent.querySelector(wdtEmojiBundle.selector);
+    if (parent){
+      wdtEmojiBundle.input = parent.querySelector(wdtEmojiBundle.selector);
+    }
 
     // @todo - [needim] - popup must be visible in viewport calculate carefully
     function findBestAvailablePosition(el) {
@@ -202,7 +203,7 @@
       sortedSections[sortedSectionsArray[i]] = sections[sortedSectionsArray[i]];
     }
 
-    wdtEmojiBundle.fillPickerPopupByGroup(Object.keys(sortedSections)[0]);
+    wdtEmojiBundle.setActiveTab(Object.keys(sortedSections)[0]);
   }
 
    wdtEmojiBundle.fillPickerPopupByGroup = function (title) {
@@ -325,12 +326,13 @@
 
     live('click', '.wdt-emoji-list a.wdt-emoji', function (event) {
       var selection = getSelection(wdtEmojiBundle.input);
-
-      replaceText(wdtEmojiBundle.input, selection, ':' + this.dataset.wdtEmojiShortname + ':');
+      if (selection){
+        replaceText(wdtEmojiBundle.input, selection, ':' + this.dataset.wdtEmojiShortname + ':');
+        var ce = new Event('input');
+        wdtEmojiBundle.input.dispatchEvent(ce);
+      }
       fire('select', {el: wdtEmojiBundle.input, event: event, emoji: ':' + this.dataset.wdtEmojiShortname + ':'});
 
-      var ce = new Event('input');
-      wdtEmojiBundle.input.dispatchEvent(ce);
       wdtEmojiBundle.close();
 
       return false;
