@@ -111,13 +111,9 @@
    * @param element
    */
   wdtEmojiBundle.addPicker = function (element) {
-    if (!hasClass(element, 'wdt-emoji-picker-ready')) {
-      var div = document.querySelector('.wdt-emoji-picker');
-      addClass(element.parentNode, 'wdt-emoji-picker-parent');
-      div.addEventListener('click', wdtEmojiBundle.openPicker);
-
-      addClass(element, 'wdt-emoji-picker-ready');
-    }
+    var node = document.querySelector(element);
+    addClass(node.parentNode, 'wdt-emoji-picker-parent');
+    node.addEventListener('click', wdtEmojiBundle.openPicker);
   };
 
   /**
