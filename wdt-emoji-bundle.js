@@ -289,6 +289,7 @@
    * Close the bundle popup
    */
   wdtEmojiBundle.close = function () {
+    wdtEmojiBundle.closePicker(this);
     removeClass(wdtEmojiBundle.popup, 'open');
     wdtEmojiBundle.closePickers();
   };
@@ -337,7 +338,7 @@
 
       }
       if (self.success){
-        self.success(':' + this.dataset.wdtEmojiShortname + ':');
+        self.success(this.dataset.wdtEmojiShortname);
       }
       wdtEmojiBundle.close();
 
