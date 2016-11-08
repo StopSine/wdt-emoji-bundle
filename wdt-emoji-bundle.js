@@ -130,8 +130,6 @@
         removeClass(wdtEmojiBundle.popup, 'open');
         return false;
       }
-
-      this.innerHTML = emoji.replace_colons(':sunglasses:');
     }
     else {
       wdtEmojiBundle.input = null;
@@ -313,7 +311,6 @@
    */
   wdtEmojiBundle.closePicker = function (element) {
     removeClass(element, 'wdt-emoji-picker-open');
-    element.innerHTML = emoji.replace_colons(':smile:');
   };
 
   /**
