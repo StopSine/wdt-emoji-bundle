@@ -129,6 +129,17 @@
     var parent = findParent(ev.target, 'wdt-emoji-picker-parent');
     if (parent){
       wdtEmojiBundle.input = parent.querySelector(wdtEmojiBundle.selector);
+      
+      if (hasClass(this, 'wdt-emoji-picker-open')) {
+        wdtEmojiBundle.closePicker(this);
+        removeClass(wdtEmojiBundle.popup, 'open');
+        return false;
+      }
+
+      this.innerHTML = emoji.replace_colons(':sunglasses:');
+    }
+    else {
+      wdtEmojiBundle.input = null;
     }
 
     // @todo - [needim] - popup must be visible in viewport calculate carefully
@@ -170,19 +181,12 @@
     // fill with emoji
     wdtEmojiBundle.generateEmojiSections();
 
-    if (hasClass(this, 'wdt-emoji-picker-open')) {
-      wdtEmojiBundle.closePicker(this);
-      removeClass(wdtEmojiBundle.popup, 'open');
-      return false;
-    }
-
     //bind success with current open picker
     self.success = success;
 
     wdtEmojiBundle.closePickers();
 
     addClass(this, 'wdt-emoji-picker-open');
-    this.innerHTML = emoji.replace_colons(':sunglasses:');
   };
   
   var sortedSections = [];
