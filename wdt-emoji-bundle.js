@@ -45,7 +45,7 @@
   /**
    * Init the bundle with selector, YAY!
    */
-  wdtEmojiBundle.init = function (selector) {
+  wdtEmojiBundle.initPopup = function () {
 
     // emoji.js overrides
 
@@ -59,9 +59,6 @@
     emoji.img_sets['emojione']['sheet'] = this.defaults.emojiSheets.emojione;
 
     var self = this;
-
-    self.selector = selector;
-    self.elements = document.querySelectorAll(selector);
 
     self.popup = document.querySelector('.wdt-emoji-popup');
     self.scroller = self.popup.querySelector('.wdt-emoji-scroll-wrapper');
@@ -81,7 +78,17 @@
     self.popup.querySelector('[data-group-name="Symbols"]').innerHTML = emoji.replace_colons(':heart:');
     self.popup.querySelector('[data-group-name="Flags"]').innerHTML = emoji.replace_colons(':waving_white_flag:');
 
-    // a trick for contenteditable blur range clear
+    return self;
+  };
+
+  wdtEmojiBundle.initTextbox = function (selector) {
+
+    var self = this;
+
+    self.selector = selector;
+    self.elements = document.querySelectorAll(selector);
+
+     // a trick for contenteditable blur range clear
     self.ranges = {};
 
     if (this.elements.length) {
@@ -93,8 +100,6 @@
           el.dataset.rangeIndex = i;
           wdtEmojiBundle.addRangeStore(el);
         }
-
-        self.addPicker(self.elements[i]);
       }
     }
 
