@@ -52,6 +52,7 @@
     emoji.allow_native = this.defaults.allowNative;
     emoji.img_set = this.defaults.emojiType;
     emoji.use_sheet = true;
+    emoji.colons_mode = true;
     emoji.supports_css = true;
     emoji.img_sets['apple']['sheet'] = this.defaults.emojiSheets.apple;
     emoji.img_sets['google']['sheet'] = this.defaults.emojiSheets.google;
@@ -59,6 +60,7 @@
     emoji.img_sets['emojione']['sheet'] = this.defaults.emojiSheets.emojione;
 
     var self = this;
+    self.emoji = emoji;
 
     self.popup = document.querySelector('.wdt-emoji-popup');
     self.scroller = self.popup.querySelector('.wdt-emoji-scroll-wrapper');
