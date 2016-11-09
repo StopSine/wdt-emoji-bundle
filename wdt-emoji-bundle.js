@@ -52,7 +52,6 @@
     emoji.allow_native = this.defaults.allowNative;
     emoji.img_set = this.defaults.emojiType;
     emoji.use_sheet = true;
-    emoji.colons_mode = true;
     emoji.supports_css = true;
     emoji.img_sets['apple']['sheet'] = this.defaults.emojiSheets.apple;
     emoji.img_sets['google']['sheet'] = this.defaults.emojiSheets.google;
