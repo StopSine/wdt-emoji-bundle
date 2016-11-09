@@ -413,7 +413,7 @@ img.emoji {
 @media only screen 
 and (max-device-width: 415px) {
 
-  span.emoji-outer {
+  .wdt-emoji-popup span.emoji-outer {
     width: 40px;
     height: 40px;
   }
